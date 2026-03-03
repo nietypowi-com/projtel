@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projtel Serwis – Sieci Światłowodowe | Zduńska Wola</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,300;0,400;0,600;1,300&family=Barlow+Condensed:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0a0c0f;
+    --dark: #111418;
+    --panel: #161b22;
+    --orange: #ff6b1a;
+    --orange-dim: #c44d0f;
+    --glow: rgba(255,107,26,0.18);
+    --white: #f0ede8;
+    --gray: #8a8f98;
+    --light: #d4cfc8;
+    --border: rgba(255,107,26,0.2);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Barlow', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    width: 12px; height: 12px;
+    background: var(--orange);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.15s ease, opacity 0.3s;
+    mix-blend-mode: difference;
+  }
+  .cursor-ring {
+    width: 36px; height: 36px;
+    border: 1px solid var(--orange);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9998;
+    transition: transform 0.4s cubic-bezier(.23,1,.32,1), opacity 0.3s;
+    opacity: 0.5;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.4rem 4rem;
+    background: linear-gradient(to bottom, rgba(10,12,15,0.96), transparent);
+    backdrop-filter: blur(0px);
+  }
+  .nav-logo {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1.25rem;
+    letter-spacing: 0.08em;
+    color: var(--white);
+    text-decoration: none;
+    display: flex; align-items: center; gap: 0.6rem;
+  }
+  .nav-logo span { color: var(--orange); }
+  .nav-dot {
+    width: 8px; height: 8px;
+    background: var(--orange);
+    border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gray);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--orange); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-left {
+    display: flex; flex-direction: column;
+    justify-content: flex-end;
+    padding: 10rem 4rem 6rem;
+    position: relative; z-index: 2;
+  }
+  .hero-eyebrow {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 1.5rem;
+    display: flex; align-items: center; gap: 1rem;
+  }
+  .hero-eyebrow::before {
+    content: '';
+    display: block;
+    width: 40px; height: 1px;
+    background: var(--orange);
+  }
+  h1 {
+    font-family: 'Bebas Neue', cursive;
+    font-size: clamp(4.5rem, 9vw, 9rem);
+    line-height: 0.9;
+    letter-spacing: 0.02em;
+    color: var(--white);
+    margin-bottom: 2rem;
+  }
+  h1 em {
+    color: var(--orange);
+    font-style: normal;
+    display: block;
+  }
+  .hero-sub {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--light);
+    max-width: 380px;
+    margin-bottom: 3rem;
+  }
+  .hero-cta {
+    display: flex; gap: 1.2rem; align-items: center;
+  }
+  .btn-primary {
+    background: var(--orange);
+    color: var(--black);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 1rem 2.2rem;
+    text-decoration: none;
+    display: inline-block;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    transition: background 0.3s, transform 0.3s;
+  }
+  .btn-primary:hover { background: var(--orange-dim); transform: translateY(-2px); }
+  .btn-ghost {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gray);
+    text-decoration: none;
+    display: flex; align-items: center; gap: 0.5rem;
+    transition: color 0.3s;
+  }
+  .btn-ghost:hover { color: var(--white); }
+  .btn-ghost svg { transition: transform 0.3s; }
+  .btn-ghost:hover svg { transform: translateX(4px); }
+
+  /* Hero right - fiber visual */
+  .hero-right {
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    opacity: 0.5;
+    filter: saturate(0.3) brightness(0.7);
+  }
+  .hero-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, var(--black) 0%, transparent 50%, rgba(255,107,26,0.05) 100%);
+  }
+  .hero-grid-line {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(to right, rgba(255,107,26,0.04) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,107,26,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+
+  /* Fiber animation */
+  .fiber-visual {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .fiber-lines {
+    position: absolute;
+    width: 100%; height: 100%;
+    overflow: hidden;
+  }
+  .fiber-line {
+    position: absolute;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--orange), transparent);
+    animation: fiber-travel 4s linear infinite;
+    opacity: 0;
+  }
+  @keyframes fiber-travel {
+    0% { opacity: 0; transform: translateX(-100%); }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { opacity: 0; transform: translateX(200%); }
+  }
+
+  /* Stats bar */
+  .stats-bar {
+    background: var(--panel);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 2rem 4rem;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+  }
+  .stat-item {
+    padding: 1rem 2rem;
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column;
+  }
+  .stat-item:last-child { border-right: none; }
+  .stat-num {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 3.2rem;
+    color: var(--orange);
+    line-height: 1;
+    letter-spacing: 0.03em;
+  }
+  .stat-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-top: 0.3rem;
+  }
+
+  /* SECTIONS */
+  section { padding: 8rem 4rem; }
+  .section-tag {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 1.2rem;
+    display: flex; align-items: center; gap: 1rem;
+  }
+  .section-tag::after {
+    content: '';
+    display: block;
+    width: 50px; height: 1px;
+    background: var(--orange);
+  }
+  h2 {
+    font-family: 'Bebas Neue', cursive;
+    font-size: clamp(3rem, 5vw, 5.5rem);
+    line-height: 0.95;
+    letter-spacing: 0.02em;
+    color: var(--white);
+  }
+  h2 span { color: var(--orange); }
+
+  /* ABOUT */
+  #about {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem;
+    align-items: center;
+    background: var(--black);
+    position: relative;
+    overflow: hidden;
+  }
+  #about::before {
+    content: 'FAMILY';
+    position: absolute;
+    right: -2rem; top: 50%;
+    transform: translateY(-50%);
+    font-family: 'Bebas Neue', cursive;
+    font-size: 20rem;
+    color: rgba(255,107,26,0.03);
+    pointer-events: none;
+    white-space: nowrap;
+  }
+  .about-img-wrap {
+    position: relative;
+  }
+  .about-img {
+    width: 100%;
+    aspect-ratio: 4/5;
+    object-fit: cover;
+    filter: saturate(0.2) brightness(0.8);
+    clip-path: polygon(0 0, 90% 0, 100% 10%, 100% 100%, 10% 100%, 0% 90%);
+  }
+  .about-img-accent {
+    position: absolute;
+    bottom: -2rem; right: -2rem;
+    width: 180px; height: 180px;
+    border: 1px solid var(--orange);
+    clip-path: polygon(0 0, 90% 0, 100% 10%, 100% 100%, 10% 100%, 0% 90%);
+    opacity: 0.3;
+  }
+  .about-badge {
+    position: absolute;
+    top: 2rem; left: -1.5rem;
+    background: var(--orange);
+    color: var(--black);
+    padding: 1rem 1.5rem;
+    clip-path: polygon(0 0, 100% 0, 100% 80%, 90% 100%, 0 100%);
+  }
+  .about-badge-year {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 2.5rem;
+    line-height: 1;
+  }
+  .about-badge-text {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+  .about-content h2 { margin-bottom: 2rem; }
+  .about-body {
+    font-size: 1rem;
+    line-height: 1.8;
+    color: var(--light);
+    margin-bottom: 2rem;
+  }
+  .about-body p + p { margin-top: 1.2rem; }
+  .about-highlights {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 2.5rem;
+  }
+  .highlight-item {
+    padding: 1.2rem;
+    border: 1px solid var(--border);
+    background: var(--panel);
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s, background 0.3s;
+  }
+  .highlight-item::before {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--orange);
+    transform: scaleX(0);
+    transition: transform 0.4s ease;
+    transform-origin: left;
+  }
+  .highlight-item:hover::before { transform: scaleX(1); }
+  .highlight-icon { font-size: 1.4rem; margin-bottom: 0.5rem; }
+  .highlight-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gray);
+  }
+  .highlight-val {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--white);
+    margin-top: 0.2rem;
+  }
+
+  /* SERVICES */
+  #services {
+    background: var(--dark);
+    position: relative;
+  }
+  .services-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: end;
+    margin-bottom: 5rem;
+  }
+  .services-intro {
+    font-size: 1rem; line-height: 1.8;
+    color: var(--light);
+    padding-top: 1rem;
+  }
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    border: 1px solid var(--border);
+  }
+  .service-card {
+    padding: 3rem 2.5rem;
+    border-right: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+    transition: background 0.4s;
+    cursor: pointer;
+  }
+  .service-card:last-child { border-right: none; }
+  .service-card:nth-child(n+4) { border-top: 1px solid var(--border); }
+  .service-card:hover { background: rgba(255,107,26,0.04); }
+  .service-num {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 4rem;
+    color: rgba(255,107,26,0.12);
+    position: absolute;
+    top: 1.5rem; right: 1.5rem;
+    line-height: 1;
+    transition: color 0.4s;
+  }
+  .service-card:hover .service-num { color: rgba(255,107,26,0.25); }
+  .service-icon-wrap {
+    width: 48px; height: 48px;
+    background: var(--border);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 2rem;
+    clip-path: polygon(4px 0%, 100% 0%, calc(100% - 4px) 100%, 0% 100%);
+    transition: background 0.3s;
+  }
+  .service-card:hover .service-icon-wrap { background: var(--orange); }
+  .service-icon { font-size: 1.4rem; filter: grayscale(1); transition: filter 0.3s; }
+  .service-card:hover .service-icon { filter: grayscale(0); }
+  .service-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: 0.05em;
+    color: var(--white);
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+  }
+  .service-desc {
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: var(--gray);
+  }
+  .service-tag {
+    margin-top: 1.5rem;
+    display: inline-block;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--orange);
+    border: 1px solid var(--border);
+    padding: 0.3rem 0.7rem;
+  }
+
+  /* PROJECTS */
+  #projects {
+    background: var(--black);
+    position: relative;
+  }
+  .projects-header {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    margin-bottom: 4rem;
+    gap: 2rem;
+  }
+  .projects-count {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gray);
+    text-align: right;
+  }
+  .projects-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5px;
+    background: var(--border);
+    border: 1.5px solid var(--border);
+  }
+  .project-card {
+    background: var(--black);
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 16/9;
+    cursor: pointer;
+  }
+  .project-card:first-child {
+    grid-column: span 2;
+    aspect-ratio: 21/9;
+  }
+  .project-img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    filter: saturate(0.15) brightness(0.6);
+    transition: filter 0.6s ease, transform 0.6s ease;
+  }
+  .project-card:hover .project-img {
+    filter: saturate(0.4) brightness(0.7);
+    transform: scale(1.03);
+  }
+  .project-info {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 2rem;
+    background: linear-gradient(to top, rgba(10,12,15,0.95) 0%, transparent 100%);
+    transform: translateY(30%);
+    transition: transform 0.4s ease;
+  }
+  .project-card:hover .project-info { transform: translateY(0); }
+  .project-location {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 0.4rem;
+  }
+  .project-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: var(--white);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .project-meta {
+    font-size: 0.85rem;
+    color: var(--gray);
+    margin-top: 0.4rem;
+    opacity: 0;
+    transition: opacity 0.4s ease 0.1s;
+  }
+  .project-card:hover .project-meta { opacity: 1; }
+
+  /* Partners */
+  .partners-strip {
+    background: var(--panel);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 3rem 4rem;
+    overflow: hidden;
+  }
+  .partners-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--gray);
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  .partners-track {
+    display: flex;
+    gap: 5rem;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .partner-logo {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.8rem;
+    letter-spacing: 0.1em;
+    color: var(--gray);
+    opacity: 0.5;
+    transition: opacity 0.3s, color 0.3s;
+  }
+  .partner-logo:hover { opacity: 1; color: var(--white); }
+  .partner-logo.featured { color: var(--orange); opacity: 0.8; font-size: 2.2rem; }
+  .partner-logo.featured:hover { opacity: 1; }
+
+  /* CONTACT */
+  #contact {
+    background: var(--dark);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    padding: 0;
+    min-height: 80vh;
+  }
+  .contact-left {
+    padding: 8rem 4rem;
+    background: var(--panel);
+    border-right: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .contact-left::before {
+    content: '';
+    position: absolute;
+    top: -10%; right: -10%;
+    width: 40vw; height: 40vw;
+    background: radial-gradient(circle, rgba(255,107,26,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .contact-right {
+    padding: 8rem 4rem;
+    display: flex; flex-direction: column;
+    gap: 3rem;
+  }
+  .contact-left h2 { margin-bottom: 2rem; }
+  .contact-body {
+    font-size: 1rem; line-height: 1.8;
+    color: var(--light);
+    margin-bottom: 3rem;
+    max-width: 400px;
+  }
+  .contact-details { display: flex; flex-direction: column; gap: 1.8rem; }
+  .contact-item {
+    display: flex; align-items: flex-start; gap: 1.2rem;
+  }
+  .contact-icon {
+    width: 42px; height: 42px; min-width: 42px;
+    background: var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem;
+    clip-path: polygon(4px 0%, 100% 0%, calc(100% - 4px) 100%, 0% 100%);
+  }
+  .contact-text-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-bottom: 0.2rem;
+  }
+  .contact-text-val {
+    font-size: 1rem;
+    color: var(--white);
+    font-weight: 400;
+  }
+  .contact-text-val a {
+    color: var(--white);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .contact-text-val a:hover { color: var(--orange); }
+
+  /* Map placeholder */
+  .map-wrap {
+    flex: 1;
+    min-height: 300px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .map-bg {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(to right, rgba(255,107,26,0.06) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,107,26,0.06) 1px, transparent 1px);
+    background-size: 30px 30px;
+  }
+  .map-pin {
+    position: relative; z-index: 2;
+    display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+  }
+  .map-pin-icon {
+    width: 48px; height: 48px;
+    background: var(--orange);
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 0 30px rgba(255,107,26,0.5);
+  }
+  .map-pin-inner {
+    width: 16px; height: 16px;
+    background: var(--black);
+    border-radius: 50%;
+    transform: rotate(45deg);
+  }
+  .map-pin-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--white);
+    background: rgba(255,107,26,0.15);
+    border: 1px solid var(--border);
+    padding: 0.4rem 1rem;
+  }
+
+  /* NIP/REGON info */
+  .company-data {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+  }
+  .company-data-item {}
+  .company-data-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gray);
+  }
+  .company-data-val {
+    font-size: 0.95rem;
+    color: var(--light);
+    margin-top: 0.2rem;
+  }
+
+  /* FOOTER */
+  footer {
+    background: var(--black);
+    padding: 3rem 4rem;
+    border-top: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .footer-logo {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 0.1em;
+    color: var(--gray);
+  }
+  .footer-logo span { color: var(--orange); }
+  .footer-copy {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    color: var(--gray);
+  }
+  .footer-tagline {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gray);
+  }
+
+  /* Scroll indicator */
+  .scroll-indicator {
+    position: fixed; right: 2rem; top: 50%;
+    transform: translateY(-50%);
+    display: flex; flex-direction: column; gap: 8px;
+    z-index: 50;
+  }
+  .scroll-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--gray);
+    cursor: pointer;
+    transition: background 0.3s, transform 0.3s;
+  }
+  .scroll-dot.active { background: var(--orange); transform: scale(1.5); }
+
+  /* Animations */
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+
+  /* Noise texture overlay */
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.4;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    nav { padding: 1.2rem 2rem; }
+    .nav-links { display: none; }
+    .hero { grid-template-columns: 1fr; }
+    .hero-right { display: none; }
+    .hero-left { padding: 8rem 2rem 5rem; }
+    section { padding: 5rem 2rem; }
+    #about { grid-template-columns: 1fr; gap: 3rem; }
+    .about-img-wrap { display: none; }
+    .services-header { grid-template-columns: 1fr; }
+    .services-grid { grid-template-columns: 1fr; }
+    .service-card { border-right: none; border-bottom: 1px solid var(--border); }
+    .stats-bar { grid-template-columns: 1fr 1fr; padding: 2rem; }
+    .stat-item:nth-child(2) { border-right: none; }
+    .projects-grid { grid-template-columns: 1fr; }
+    .project-card:first-child { grid-column: span 1; aspect-ratio: 16/9; }
+    #contact { grid-template-columns: 1fr; }
+    .contact-left, .contact-right { padding: 4rem 2rem; }
+    footer { flex-direction: column; gap: 1rem; text-align: center; }
+    .scroll-indicator { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- Scroll dots -->
+<div class="scroll-indicator">
+  <div class="scroll-dot active" onclick="document.getElementById('home').scrollIntoView({behavior:'smooth'})"></div>
+  <div class="scroll-dot" onclick="document.getElementById('about').scrollIntoView({behavior:'smooth'})"></div>
+  <div class="scroll-dot" onclick="document.getElementById('services').scrollIntoView({behavior:'smooth'})"></div>
+  <div class="scroll-dot" onclick="document.getElementById('projects').scrollIntoView({behavior:'smooth'})"></div>
+  <div class="scroll-dot" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})"></div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a href="#home" class="nav-logo">
+    <div class="nav-dot"></div>
+    PROJTEL <span>SERWIS</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#about">O firmie</a></li>
+    <li><a href="#services">Usługi</a></li>
+    <li><a href="#projects">Projekty</a></li>
+    <li><a href="#contact">Kontakt</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="home" class="hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow reveal">Eksperci sieci światłowodowych</div>
+    <h1 class="reveal reveal-delay-1">
+      ŚWIATŁOWÓD<br>
+      <em>NA NOWYM</em>
+      POZIOMIE
+    </h1>
+    <p class="hero-sub reveal reveal-delay-2">
+      Rodzinna firma z Zduńskiej Woli. Budujemy infrastrukturę telekomunikacyjną dla największych operatorów w Polsce — precyzyjnie, niezawodnie, z pasją do rzemiosła.
+    </p>
+    <div class="hero-cta reveal reveal-delay-3">
+      <a href="#contact" class="btn-primary">Skontaktuj się</a>
+      <a href="#services" class="btn-ghost">
+        Poznaj ofertę
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <img class="hero-img"
+      src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1200&q=80"
+      alt="Sieci światłowodowe"
+      loading="eager">
+    <div class="hero-overlay"></div>
+    <div class="hero-grid-line"></div>
+    <div class="fiber-lines" id="fiberLines"></div>
+  </div>
+</section>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="stat-item reveal">
+    <span class="stat-num">15+</span>
+    <span class="stat-label">Lat doświadczenia</span>
+  </div>
+  <div class="stat-item reveal reveal-delay-1">
+    <span class="stat-num">500+</span>
+    <span class="stat-label">Zrealizowanych projektów</span>
+  </div>
+  <div class="stat-item reveal reveal-delay-2">
+    <span class="stat-num">1200+</span>
+    <span class="stat-label">km ułożonego kabla</span>
+  </div>
+  <div class="stat-item reveal reveal-delay-3">
+    <span class="stat-num">100%</span>
+    <span class="stat-label">Terminowość realizacji</span>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-img-wrap reveal">
+    <img class="about-img"
+      src="https://images.unsplash.com/photo-1504439468489-c8920d796a29?w=800&q=80"
+      alt="Zespół Projtel Serwis">
+    <div class="about-img-accent"></div>
+    <div class="about-badge">
+      <div class="about-badge-year">2009</div>
+      <div class="about-badge-text">Rok założenia</div>
+    </div>
+  </div>
+  <div class="about-content">
+    <div class="section-tag reveal">O firmie</div>
+    <h2 class="reveal">RODZINNE<br><span>RZEMIOSŁO</span><br>W CYFROWYM ŚWIECIE</h2>
+    <div class="about-body reveal">
+      <p>Projtel Serwis to firma rodzinna z Zduńskiej Woli, działająca w branży telekomunikacyjnej od ponad 15 lat. Założona przez ojca i kontynuowana przez kolejne pokolenie, firma od samego początku stawia na rzetelność, jakość i wieloletnią wierność klientom.</p>
+      <p>Specjalizujemy się w kompleksowym zakładaniu sieci światłowodowych — od projektu przez instalację po odbiór techniczny. Nasze realizacje obejmują zarówno sieci miejskie, jak i rozległe instalacje dla największych operatorów telekomunikacyjnych w kraju, w tym <strong style="color:var(--white)">Orange Polska</strong>.</p>
+      <p>Działamy na terenie województwa łódzkiego i całej Polski. Każdy projekt traktujemy jak własny — z pełnym zaangażowaniem rodzinnej firmy, która buduje swoją reputację projekt po projekcie.</p>
+    </div>
+    <div class="about-highlights reveal">
+      <div class="highlight-item">
+        <div class="highlight-icon">🏡</div>
+        <div class="highlight-title">Firma rodzinna</div>
+        <div class="highlight-val">II pokolenie</div>
+      </div>
+      <div class="highlight-item">
+        <div class="highlight-icon">📍</div>
+        <div class="highlight-title">Lokalizacja</div>
+        <div class="highlight-val">Zduńska Wola</div>
+      </div>
+      <div class="highlight-item">
+        <div class="highlight-icon">🔧</div>
+        <div class="highlight-title">Branża</div>
+        <div class="highlight-val">Telekomunikacja</div>
+      </div>
+      <div class="highlight-item">
+        <div class="highlight-icon">🤝</div>
+        <div class="highlight-title">Kluczowy partner</div>
+        <div class="highlight-val">Orange Polska</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="services-header">
+    <div>
+      <div class="section-tag reveal">Zakres usług</div>
+      <h2 class="reveal">KOMPLEKSOWA<br><span>OFERTA</span></h2>
+    </div>
+    <p class="services-intro reveal">
+      Oferujemy pełne spektrum usług związanych z projektowaniem, budową i serwisem sieci światłowodowych. Realizujemy zlecenia dla operatorów, deweloperów i samorządów.
+    </p>
+  </div>
+  <div class="services-grid">
+    <div class="service-card reveal">
+      <span class="service-num">01</span>
+      <div class="service-icon-wrap"><span class="service-icon">🔩</span></div>
+      <div class="service-title">Budowa sieci FTTH/FTTB</div>
+      <p class="service-desc">Kompleksowe zakładanie sieci światłowodowych do budynków mieszkalnych i biurowych. Realizujemy instalacje w technologii FTTH (Fiber to the Home) i FTTB (Fiber to the Building) zgodnie z normami operatorów.</p>
+      <span class="service-tag">Sieć szkieletowa</span>
+    </div>
+    <div class="service-card reveal reveal-delay-1">
+      <span class="service-num">02</span>
+      <div class="service-icon-wrap"><span class="service-icon">⚡</span></div>
+      <div class="service-title">Spawanie światłowodów</div>
+      <p class="service-desc">Profesjonalne spawanie włókien optycznych z użyciem nowoczesnych zgrzewarek. Precyzyjne łączenie kabli gwarantuje minimalne straty sygnału i wieloletnią niezawodność połączenia.</p>
+      <span class="service-tag">OTDR / pomiary</span>
+    </div>
+    <div class="service-card reveal reveal-delay-2">
+      <span class="service-num">03</span>
+      <div class="service-icon-wrap"><span class="service-icon">🏗️</span></div>
+      <div class="service-title">Roboty ziemne i mikrotuneling</div>
+      <p class="service-desc">Wykonujemy wykopy, przewierty horyzontalne i mikrotunele dla potrzeb kanalizacji teletechnicznej. Minimalizujemy ingerencję w nawierzchnię przy zachowaniu pełnej jakości instalacji.</p>
+      <span class="service-tag">Infrastruktura</span>
+    </div>
+    <div class="service-card reveal">
+      <span class="service-num">04</span>
+      <div class="service-icon-wrap"><span class="service-icon">📐</span></div>
+      <div class="service-title">Projektowanie tras kablowych</div>
+      <p class="service-desc">Opracowujemy dokumentację techniczną dla nowych sieci oraz inwentaryzujemy istniejącą infrastrukturę. Projekty uwzględniają wszystkie wymagania techniczne i formalne inwestora.</p>
+      <span class="service-tag">Dokumentacja</span>
+    </div>
+    <div class="service-card reveal reveal-delay-1">
+      <span class="service-num">05</span>
+      <div class="service-icon-wrap"><span class="service-icon">📡</span></div>
+      <div class="service-title">Instalacje wewnątrzbudynkowe</div>
+      <p class="service-desc">Wykonujemy pełną infrastrukturę wewnątrz budynków: od pionów kablowych przez rozdzielnice optyczne aż po gniazdka abonenckie. Gotowość pod odbiór operatora.</p>
+      <span class="service-tag">FTTH last mile</span>
+    </div>
+    <div class="service-card reveal reveal-delay-2">
+      <span class="service-num">06</span>
+      <div class="service-icon-wrap"><span class="service-icon">🛠️</span></div>
+      <div class="service-title">Serwis i utrzymanie sieci</div>
+      <p class="service-desc">Świadczymy usługi serwisowe dla istniejącej infrastruktury: lokalizacja uszkodzeń, wymiana kabli, regeneracja złączy. Dyspozycyjność 24/7 dla kluczowych klientów.</p>
+      <span class="service-tag">SLA / 24h</span>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="projects-header">
+    <div>
+      <div class="section-tag reveal">Wybrane projekty</div>
+      <h2 class="reveal">NASZE<br><span>REALIZACJE</span></h2>
+    </div>
+    <div class="projects-count reveal">
+      Doświadczenie potwierdzone<br>secinami instalacji
+    </div>
+  </div>
+
+  <div class="projects-grid">
+    <div class="project-card reveal">
+      <img class="project-img"
+        src="https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=1400&q=80"
+        alt="Sieć szkieletowa">
+      <div class="project-info">
+        <div class="project-location">Łódź i okolice · 2023</div>
+        <div class="project-title">Rozbudowa sieci szkieletowej Orange Polska</div>
+        <div class="project-meta">Budowa podziemnej kanalizacji teletechnicznej i ułożenie kabla 96J na trasie 42 km</div>
+      </div>
+    </div>
+    <div class="project-card reveal">
+      <img class="project-img"
+        src="https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?w=800&q=80"
+        alt="Osiedle mieszkaniowe">
+      <div class="project-info">
+        <div class="project-location">Zduńska Wola · 2022</div>
+        <div class="project-title">FTTH dla nowego osiedla – 480 lokali</div>
+        <div class="project-meta">Pełna instalacja wewnątrzbudynkowa, 6 bloków wielorodzinnych</div>
+      </div>
+    </div>
+    <div class="project-card reveal reveal-delay-1">
+      <img class="project-img"
+        src="https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?w=800&q=80"
+        alt="Centrum danych">
+      <div class="project-info">
+        <div class="project-location">Woj. łódzkie · 2021–2022</div>
+        <div class="project-title">Program „Łódź FTTH" – 12 gmin</div>
+        <div class="project-meta">Instalacja infrastruktury dla programu dostępu szerokopasmowego</div>
+      </div>
+    </div>
+    <div class="project-card reveal reveal-delay-2">
+      <img class="project-img"
+        src="https://images.unsplash.com/photo-1521791136064-7986c2920216?w=800&q=80"
+        alt="Współpraca biznesowa">
+      <div class="project-info">
+        <div class="project-location">Region centralny · 2023–2024</div>
+        <div class="project-title">Podwykonawstwo Orange – 80+ miejscowości</div>
+        <div class="project-meta">Ciągła współpraca przy rozbudowie sieci dostępowej na terenie woj. łódzkiego</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PARTNERS -->
+<div class="partners-strip">
+  <div class="partners-label">Zaufali nam</div>
+  <div class="partners-track">
+    <div class="partner-logo featured">ORANGE</div>
+    <div class="partner-logo">T-MOBILE</div>
+    <div class="partner-logo">ENERGA</div>
+    <div class="partner-logo">NEXERA</div>
+    <div class="partner-logo">UPC</div>
+    <div class="partner-logo">INEA</div>
+  </div>
+</div>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-left">
+    <div class="section-tag reveal">Kontakt</div>
+    <h2 class="reveal">POROZMAWIAJMY<br>O <span>PROJEKCIE</span></h2>
+    <p class="contact-body reveal">
+      Jesteśmy do Twojej dyspozycji — niezależnie od skali projektu. Każde zapytanie traktujemy poważnie i odpowiadamy w ciągu 24 godzin.
+    </p>
+    <div class="contact-details">
+      <div class="contact-item reveal">
+        <div class="contact-icon">📍</div>
+        <div>
+          <div class="contact-text-label">Adres</div>
+          <div class="contact-text-val">ul. Przykładowa 12<br>98-220 Zduńska Wola</div>
+        </div>
+      </div>
+      <div class="contact-item reveal reveal-delay-1">
+        <div class="contact-icon">📞</div>
+        <div>
+          <div class="contact-text-label">Telefon</div>
+          <div class="contact-text-val"><a href="tel:+48600000000">+48 600 000 000</a></div>
+        </div>
+      </div>
+      <div class="contact-item reveal reveal-delay-2">
+        <div class="contact-icon">✉️</div>
+        <div>
+          <div class="contact-text-label">E-mail</div>
+          <div class="contact-text-val"><a href="mailto:biuro@projtel.pl">biuro@projtel.pl</a></div>
+        </div>
+      </div>
+      <div class="contact-item reveal reveal-delay-3">
+        <div class="contact-icon">🕐</div>
+        <div>
+          <div class="contact-text-label">Godziny pracy</div>
+          <div class="contact-text-val">Pn–Pt: 7:00–16:00</div>
+        </div>
+      </div>
+    </div>
+    <div class="company-data reveal">
+      <div class="company-data-item">
+        <div class="company-data-label">NIP</div>
+        <div class="company-data-val">000-000-00-00</div>
+      </div>
+      <div class="company-data-item">
+        <div class="company-data-label">REGON</div>
+        <div class="company-data-val">000000000</div>
+      </div>
+    </div>
+  </div>
+  <div class="contact-right">
+    <div class="map-wrap reveal">
+      <div class="map-bg"></div>
+      <div class="map-pin">
+        <div class="map-pin-icon"><div class="map-pin-inner"></div></div>
+        <div class="map-pin-label">Zduńska Wola, łódzkie</div>
+      </div>
+    </div>
+    <div style="background:var(--panel);border:1px solid var(--border);padding:2.5rem;" class="reveal">
+      <div class="section-tag" style="margin-bottom:1.5rem;">Szybki kontakt</div>
+      <p style="font-size:0.95rem;line-height:1.7;color:var(--light);margin-bottom:1.5rem;">Opisz swój projekt lub zadaj pytanie — odpiszemy najszybciej jak to możliwe.</p>
+      <div style="display:flex;flex-direction:column;gap:1rem;">
+        <input type="text" placeholder="Imię i firma" style="background:var(--dark);border:1px solid var(--border);color:var(--white);padding:0.9rem 1.2rem;font-family:'Barlow',sans-serif;font-size:0.95rem;outline:none;transition:border-color 0.3s;" onfocus="this.style.borderColor='var(--orange)'" onblur="this.style.borderColor='var(--border)'">
+        <input type="email" placeholder="Adres e-mail" style="background:var(--dark);border:1px solid var(--border);color:var(--white);padding:0.9rem 1.2rem;font-family:'Barlow',sans-serif;font-size:0.95rem;outline:none;transition:border-color 0.3s;" onfocus="this.style.borderColor='var(--orange)'" onblur="this.style.borderColor='var(--border)'">
+        <textarea placeholder="Opis projektu..." rows="4" style="background:var(--dark);border:1px solid var(--border);color:var(--white);padding:0.9rem 1.2rem;font-family:'Barlow',sans-serif;font-size:0.95rem;outline:none;resize:vertical;transition:border-color 0.3s;" onfocus="this.style.borderColor='var(--orange)'" onblur="this.style.borderColor='var(--border)'"></textarea>
+        <button class="btn-primary" style="align-self:flex-start;border:none;cursor:none;">Wyślij wiadomość</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">PROJTEL <span>SERWIS</span></div>
+  <div class="footer-copy">© 2024 Projtel Serwis. Wszelkie prawa zastrzeżone.</div>
+  <div class="footer-tagline">Zduńska Wola · Polska</div>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.transform = `translate(${mx - 6}px, ${my - 6}px)`;
+  });
+
+  function animateRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.transform = `translate(${rx - 18}px, ${ry - 18}px)`;
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+
+  // Reveal on scroll
+  const reveals = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  reveals.forEach(r => obs.observe(r));
+
+  // Fiber animation
+  const fiberContainer = document.getElementById('fiberLines');
+  if(fiberContainer) {
+    for(let i = 0; i < 12; i++) {
+      const line = document.createElement('div');
+      line.className = 'fiber-line';
+      const top = 10 + (i * 7.5) + Math.random() * 3;
+      const width = 60 + Math.random() * 30;
+      const delay = Math.random() * 6;
+      const dur = 3 + Math.random() * 4;
+      const opacity = 0.3 + Math.random() * 0.7;
+      line.style.cssText = `top:${top}%;width:${width}%;left:-${width}%;animation-delay:${delay}s;animation-duration:${dur}s;opacity:0;background:linear-gradient(90deg,transparent,rgba(255,107,26,${opacity}),rgba(255,255,200,${opacity}),rgba(255,107,26,${opacity}),transparent);`;
+      fiberContainer.appendChild(line);
+    }
+  }
+
+  // Scroll dots
+  const sections = ['home','about','services','projects','contact'];
+  const dots = document.querySelectorAll('.scroll-dot');
+  const scrollObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if(e.isIntersecting) {
+        const idx = sections.indexOf(e.target.id);
+        dots.forEach((d,i) => d.classList.toggle('active', i === idx));
+      }
+    });
+  }, { threshold: 0.4 });
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if(el) scrollObs.observe(el);
+  });
+
+  // Counter animation
+  function animateCounter(el, target) {
+    const suffix = el.textContent.replace(/[0-9]/g, '');
+    let start = 0;
+    const dur = 1500;
+    const step = timestamp => {
+      if(!start) start = timestamp;
+      const prog = Math.min((timestamp - start) / dur, 1);
+      const val = Math.floor(prog * target);
+      el.textContent = val + suffix;
+      if(prog < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }
+
+  const statObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if(e.isIntersecting) {
+        const nums = e.target.querySelectorAll('.stat-num');
+        nums.forEach(n => {
+          const raw = n.textContent;
+          const num = parseInt(raw.replace(/\D/g,''));
+          if(num) animateCounter(n, num);
+        });
+        statObs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.5 });
+  const statsBar = document.querySelector('.stats-bar');
+  if(statsBar) statObs.observe(statsBar);
+</script>
+</body>
+</html>
